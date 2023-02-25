@@ -1,0 +1,23 @@
+[package]
+name = "rusty-archive"
+version = "0.1.0"
+authors = ["Jens Gutermuth"]
+edition = "2021"
+description = "Don't let your digital archive rust away! Check for modifications (intentional or not), missing files and track new additions."
+license = "MIT OR Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.69"
+bpaf = { version = "0.7", features = ["derive"] }
+chrono = "0.4.23"
+hex = "0.4.3"
+lazy_static = "1.4.0"
+rayon = "1.6"
+regex = "1.7.1"
+sha2 = "0.10"
+walkdir = "2.3"
+
+[profile.release]
+lto = true
