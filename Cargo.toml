@@ -4,6 +4,11 @@ version = "0.1.0"
 authors = ["Jens Gutermuth"]
 edition = "2021"
 description = "Don't let your digital archive rust away! Check for modifications (intentional or not), missing files and track new additions."
+repository = "https://github.com/JensGutermuth/rusty-archive.git"
+readme = "README.md"
+keywords = ["digital archive", "checksums", "bitrot"]
+categories = ["command-line-utilities", "filesystem"]
+
 license = "MIT OR Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

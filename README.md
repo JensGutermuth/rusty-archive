@@ -2,11 +2,11 @@
 
 Don't let your digital archive rust away! Check for modifications (intentional or not), missing files and track new additions.
 
+[![Continuous integration](https://github.com/JensGutermuth/rusty-archive/actions/workflows/ci.yml/badge.svg)](https://github.com/JensGutermuth/rusty-archive/actions/workflows/ci.yml)
+
 ## Tutorial
 
 This tool was written to protect the archive of a photographer, so this is what this tutorial will use as an example. There is however nothing about rusty-archive that's specific to images. This should therefore transfer well to any other archive where files are not expected to change or go missing.
-
-### Getting Started
 
 ### Install rusty-archive
 
