@@ -252,12 +252,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             FileCheckResult::Unmodifed(_) | FileCheckResult::Missing(_) => false,
                         })
                         .count();
+                    println!("└ {} files not found in archive", not_present);
                     if not_present > 0 {
-                        return Err(anyhow::Error::msg(format!(
-                            "{} files not found in archive",
-                            not_present
-                        ))
-                        .into());
+                        return Err(anyhow::Error::msg("files not found in archive").into());
                     }
                 }
                 (true, false) => {
@@ -270,11 +267,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .iter()
                         .filter(|f| matches!(f, FileCheckResult::New(_)))
                         .count();
-                    if missing_or_modified > 0 {
-                        return Err(anyhow::Error::msg(format!(
-                            "{} files changed, {} files not found in archive",
-                            missing_or_modified, new
-                        ))
+                    println!("└ {} files modified", missing_or_modified);
+                    println!("└ {} files not found in archive", new);
+                    if missing_or_modified > 0 || new > 0 {
+                        return Err(anyhow::Error::msg(
+                            "files modified or files not found in archive",
+                        )
                         .into());
                     }
                 }
@@ -304,12 +302,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             _ => {}
                         }
                     }
+                    println!("└ {} files not found in archive", not_present);
+                    println!("└ {} files in archive not found", missing_sha256.len());
                     if not_present > 0 || !missing_sha256.is_empty() {
-                        return Err(anyhow::Error::msg(format!(
-                            "{} files not found in archive, {} files in archive not found",
-                            not_present,
-                            missing_sha256.len()
-                        ))
+                        return Err(anyhow::Error::msg(
+                            "files not found in archive and / or files in archive not found",
+                        )
                         .into());
                     }
                 }
@@ -328,11 +326,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .iter()
                         .filter(|f| matches!(f, FileCheckResult::New(_)))
                         .count();
+                    println!("└ {} files missing or modified", missing_or_modified);
+                    println!("└ {} files not found in archive", new);
+
                     if missing_or_modified > 0 || new > 0 {
-                        return Err(anyhow::Error::msg(format!(
-                            "{} files missing or changed, {} files not found in archive",
-                            missing_or_modified, new
-                        ))
+                        return Err(anyhow::Error::msg(
+                            "files missing, modified and / or not found in archive",
+                        )
                         .into());
                     }
                 }

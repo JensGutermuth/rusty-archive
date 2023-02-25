@@ -1,4 +1,3 @@
-use std::cmp::max;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
@@ -76,79 +75,39 @@ impl StatsCollector {
     }
     pub fn print_results_for_update(&self, duration: Duration, newly_missing: u64) {
         let r = self.get_results();
-        let prec_1 = (max(r.files_checked, r.files_unchanged) as f64)
-            .log10()
-            .ceil() as usize;
-        println!(
-            "{:prec$} files checked in {:.1?}:",
-            r.files_checked,
-            duration,
-            prec = prec_1
-        );
+        println!("{} files checked in {:.1?}:", r.files_checked, duration,);
 
-        let prec_2 = (max(r.files_read, r.files_not_found) as f64).log10().ceil() as usize;
         println!(
-            "    {:prec$} files read ({:.1} GiB, {:.0} MiB/s):",
+            "└ {} files read ({:.1} GiB, {:.0} MiB/s):",
             r.files_read,
             (r.bytes_read as f64) / 1024.0 / 1024.0 / 1024.0,
             (r.bytes_read as f64) / 1024.0 / 1024.0 / duration.as_secs_f64(),
-            prec = prec_2
         );
 
-        let prec_3 = (max(
-            max(r.files_new, r.files_modified),
-            max(r.files_duplicate_removed, newly_missing),
-        ) as f64)
-            .log10()
-            .ceil() as usize;
-        println!("        {:prec$} new files", r.files_new, prec = prec_3);
+        println!("  └ {} new files", r.files_new);
+        println!("  └ {} files modified", r.files_modified,);
+        println!("└ {} files not found:", r.files_not_found,);
         println!(
-            "        {:prec$} files modified",
-            r.files_modified,
-            prec = prec_3
-        );
-        println!(
-            "    {:prec$} files not found:",
-            r.files_not_found,
-            prec = prec_2
-        );
-        println!(
-            "        {:prec$} files found elsewhere (moved or duplicates removed)",
+            "  └ {} files found elsewhere (moved or duplicates removed)",
             r.files_duplicate_removed,
-            prec = prec_3
         );
+        println!("  └ {} files newly missing", newly_missing,);
         println!(
-            "        {:prec$} files newly missing",
-            newly_missing,
-            prec = prec_3
-        );
-        println!(
-            "{:prec$} files unchanged ({:.1} GiB)",
+            "{} files unchanged ({:.1} GiB)",
             r.files_unchanged,
             r.files_unchanged_size as f64 / 1024.0 / 1024.0 / 1024.0,
-            prec = prec_1
         );
     }
 
     pub(crate) fn print_results_for_verify(&self, duration: Duration) {
         let r = self.get_results();
-        let prec_1 = (max(r.files_checked, r.files_unchanged) as f64)
-            .log10()
-            .ceil() as usize;
-        println!(
-            "{:prec$} files checked in {:.1?}:",
-            r.files_checked,
-            duration,
-            prec = prec_1
-        );
+        println!("{} files checked in {:.1?}:", r.files_checked, duration,);
 
-        let prec_2 = (max(r.files_read, r.files_not_found) as f64).log10().ceil() as usize;
         println!(
-            "    {:prec$} files read ({:.1} GiB, {:.0} MiB/s):",
+            "└ {} files read ({:.1} GiB, {:.0} MiB/s)",
             r.files_read,
             (r.bytes_read as f64) / 1024.0 / 1024.0 / 1024.0,
             (r.bytes_read as f64) / 1024.0 / 1024.0 / duration.as_secs_f64(),
-            prec = prec_2
         );
     }
 }
