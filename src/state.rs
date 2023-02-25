@@ -7,6 +7,7 @@ use std::fs::{remove_file, File};
 use std::io::{self, BufRead, BufReader, BufWriter};
 use std::path::{Path, PathBuf};
 use time::OffsetDateTime;
+use time_tz::OffsetDateTimeExt;
 use walkdir::WalkDir;
 
 pub fn read_state(state_dir: &Path) -> Result<HashMap<PathBuf, FileInfo>> {
@@ -40,7 +41,8 @@ pub fn write_state<'a>(
     state_dir: &Path,
     checked_files: impl Iterator<Item = &'a FileCheckResult>,
 ) -> Result<(), io::Error> {
-    let now = OffsetDateTime::now_local().unwrap();
+    let system_tz = time_tz::system::get_timezone().expect("Failed to find system timezone");
+    let now = OffsetDateTime::now_utc().to_timezone(system_tz);
     let format =
         time::format_description::parse("[year][month][day] [hour][minute][second]").unwrap();
     let mut state_f = BufWriter::with_capacity(
