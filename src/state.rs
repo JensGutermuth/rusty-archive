@@ -2,11 +2,12 @@ use crate::file_check::FileCheckResult;
 use crate::file_info::FileInfo;
 
 use anyhow::{Context, Result};
-use chrono::Local;
 use std::collections::HashMap;
 use std::fs::{remove_file, File};
 use std::io::{self, BufRead, BufReader, BufWriter};
 use std::path::{Path, PathBuf};
+use time::OffsetDateTime;
+use time_tz::OffsetDateTimeExt;
 use walkdir::WalkDir;
 
 pub fn read_state(state_dir: &Path) -> Result<HashMap<PathBuf, FileInfo>> {
@@ -40,27 +41,30 @@ pub fn write_state<'a>(
     state_dir: &Path,
     checked_files: impl Iterator<Item = &'a FileCheckResult>,
 ) -> Result<(), io::Error> {
-    let now = Local::now(); // e.g. `2014-11-28T21:45:59.324310806+09:00`
+    let system_tz = time_tz::system::get_timezone().expect("Failed to find system timezone");
+    let now = OffsetDateTime::now_utc().to_timezone(system_tz);
+    let format =
+        time::format_description::parse("[year][month][day] [hour][minute][second]").unwrap();
     let mut state_f = BufWriter::with_capacity(
         1024 * 1024,
         File::options()
             .write(true)
             .create_new(true)
-            .open(state_dir.join(format!("{}.state", now.format("%Y%m%d %H%M%S"))))?,
+            .open(state_dir.join(format!("{}.state", now.format(&format).unwrap())))?,
     );
     let mut modified_f = BufWriter::with_capacity(
         1024 * 1024,
         File::options()
             .write(true)
             .create_new(true)
-            .open(state_dir.join(format!("{}.modified", now.format("%Y%m%d %H%M%S"))))?,
+            .open(state_dir.join(format!("{}.modified", now.format(&format).unwrap())))?,
     );
     let mut missing_f = BufWriter::with_capacity(
         1024 * 1024,
         File::options()
             .write(true)
             .create_new(true)
-            .open(state_dir.join(format!("{}.missing", now.format("%Y%m%d %H%M%S"))))?,
+            .open(state_dir.join(format!("{}.missing", now.format(&format).unwrap())))?,
     );
 
     let mut modified_files = 0;
@@ -85,10 +89,10 @@ pub fn write_state<'a>(
     drop(modified_f);
     drop(missing_f);
     if modified_files == 0 {
-        remove_file(state_dir.join(format!("{}.modified", now.format("%Y%m%d %H%M%S"))))?;
+        remove_file(state_dir.join(format!("{}.modified", now.format(&format).unwrap())))?;
     }
     if missing_files == 0 {
-        remove_file(state_dir.join(format!("{}.missing", now.format("%Y%m%d %H%M%S"))))?;
+        remove_file(state_dir.join(format!("{}.missing", now.format(&format).unwrap())))?;
     }
 
     Ok(())
