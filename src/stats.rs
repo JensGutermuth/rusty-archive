@@ -101,11 +101,12 @@ impl StatsCollector {
 
     pub(crate) fn print_results_for_verify(&self, duration: Duration) {
         let r = self.get_results();
-        println!("{} files checked in {:.1?}:", r.files_checked, duration,);
+        println!("{} files in archive:", r.files_checked);
 
         println!(
-            "└ {} files read ({:.1} GiB, {:.0} MiB/s)",
+            "└ {} files read in {:.1?} ({:.1} GiB, {:.0} MiB/s)",
             r.files_read,
+            duration,
             (r.bytes_read as f64) / 1024.0 / 1024.0 / 1024.0,
             (r.bytes_read as f64) / 1024.0 / 1024.0 / duration.as_secs_f64(),
         );

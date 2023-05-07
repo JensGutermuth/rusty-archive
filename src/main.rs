@@ -224,8 +224,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             state_dir: _,
             directory: _,
         } => {
-            stats.print_results_for_verify(start.elapsed());
-
             let archive_sha256_digests = checked_files
                 .iter()
                 .filter_map(|f| match &f {
@@ -244,29 +242,53 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         .iter()
                         .filter(|f| match f {
                             FileCheckResult::New(fi) => {
-                                !archive_sha256_digests.contains(&fi.sha256_digest)
+                                if !archive_sha256_digests.contains(&fi.sha256_digest) {
+                                    println!("NOT IN ARCHIVE: {:}", fi.rel_path.to_string_lossy());
+                                    return true;
+                                }
+                                false
                             }
                             FileCheckResult::Modified(fi_mod) => {
-                                !archive_sha256_digests.contains(&fi_mod.current.sha256_digest)
+                                if !archive_sha256_digests.contains(&fi_mod.current.sha256_digest) {
+                                    println!(
+                                        "NOT IN ARCHIVE: {:}",
+                                        fi_mod.current.rel_path.to_string_lossy()
+                                    );
+                                    return true;
+                                }
+                                false
                             }
                             FileCheckResult::Unmodifed(_) | FileCheckResult::Missing(_) => false,
                         })
                         .count();
+                    stats.print_results_for_verify(start.elapsed());
                     println!("└ {} files not found in archive", not_present);
                     if not_present > 0 {
-                        return Err(anyhow::Error::msg("files not found in archive").into());
+                        return Err(
+                            anyhow::Error::msg("not all files were found in the archive").into(),
+                        );
                     }
                 }
                 (true, false) => {
                     // ensure the files found match the ones in the archive at that path
                     let missing_or_modified = checked_files
                         .iter()
-                        .filter(|f| matches!(f, FileCheckResult::Modified(_)))
+                        .filter(|f| {
+                            if let FileCheckResult::Modified(fi_mod) = f {
+                                println!(
+                                    "MODIFIED: {:}",
+                                    fi_mod.current.rel_path.to_string_lossy()
+                                );
+                                return true;
+                            }
+                            false
+                        })
                         .count();
                     let new = checked_files
                         .iter()
                         .filter(|f| matches!(f, FileCheckResult::New(_)))
                         .count();
+                    stats.print_results_for_verify(start.elapsed());
                     println!("└ {} files modified", missing_or_modified);
                     println!("└ {} files not found in archive", new);
                     if missing_or_modified > 0 || new > 0 {
