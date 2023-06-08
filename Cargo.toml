@@ -1,6 +1,6 @@
 [package]
 name = "rusty-archive"
-version = "0.2.1"
+version = "0.2.2"
 authors = ["Jens Gutermuth"]
 edition = "2021"
 description = "Don't let your digital archive rust away! Check for modifications (intentional or not), missing files and track new additions."
