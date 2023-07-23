@@ -19,7 +19,7 @@ bpaf = { version = "0.8", features = ["derive"] }
 hex = "0.4.3"
 lazy_static = "1.4.0"
 rayon = "1.7"
-regex = "1.8.4"
+regex = "1.9.1"
 sha2 = "0.10"
 time = { version = "0.3.23", features = ["local-offset", "formatting"] }
 time-tz = { version = "1.0.3", features = ["system"] }
