@@ -22,7 +22,7 @@ rayon = "1.7"
 regex = "1.9.1"
 sha2 = "0.10"
 time = { version = "0.3.23", features = ["local-offset", "formatting"] }
-time-tz = { version = "1.0.3", features = ["system"] }
+time-tz = { version = "2.0.0", features = ["system"] }
 walkdir = "2.3"
 
 [profile.release]
