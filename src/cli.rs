@@ -6,11 +6,6 @@ fn regex(arg: String) -> Result<Regex, regex::Error> {
 }
 
 #[derive(Clone, Debug, Bpaf)]
-/// Hash files in a directory tree
-#[bpaf(options)]
-pub struct Update {}
-
-#[derive(Clone, Debug, Bpaf)]
 pub enum Cmd {
     /// Update the archive state
     #[bpaf(command)]
