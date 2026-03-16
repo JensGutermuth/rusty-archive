@@ -18,7 +18,7 @@ anyhow = "1.0.100"
 bpaf = { version = "0.9", features = ["derive"] }
 hex = "0.4.3"
 lazy_static = "1.4.0"
-rayon = "1.8"
+rayon = "1.11"
 regex = "1.12.3"
 sha2 = "0.10"
 time = { version = "0.3.47", features = ["local-offset", "formatting"] }
