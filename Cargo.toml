@@ -20,7 +20,7 @@ hex = "0.4.3"
 lazy_static = "1.4.0"
 rayon = "1.11"
 regex = "1.12.3"
-sha2 = "0.10"
+sha2 = "0.11"
 time = { version = "0.3.47", features = ["local-offset", "formatting"] }
 time-tz = { version = "2.0.0", features = ["system"] }
 walkdir = "2.4"
